@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy
   attr_accessor :remember_token
   before_save { self.email = email.downcase }
   validates :name, presence: true, length: { maximum: 50 }
@@ -19,6 +20,10 @@ class User < ApplicationRecord
   # Returns a random token.
   def User.new_token
     SecureRandom.urlsafe_base64
+  end
+  
+  def feed
+    Micropost.where("user_id = ?", id)
   end
 
   # Remembers a user in the database for use in persistent sessions.
